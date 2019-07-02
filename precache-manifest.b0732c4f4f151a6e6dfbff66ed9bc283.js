@@ -1,19 +1,19 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "f32ac4769a919197ec043331c7c7c249",
+    "revision": "f22c8ff2172d93fd6efd9fb0e9925a78",
     "url": "/wordgame/index.html"
   },
   {
-    "revision": "3c1eff610c44d85518ce",
-    "url": "/wordgame/static/css/main.bbd53a3d.chunk.css"
+    "revision": "842c65586cb9b462559d",
+    "url": "/wordgame/static/css/main.7931515c.chunk.css"
   },
   {
     "revision": "7540c4b8a3285aabda4d",
     "url": "/wordgame/static/js/2.e37e8b1b.chunk.js"
   },
   {
-    "revision": "3c1eff610c44d85518ce",
-    "url": "/wordgame/static/js/main.a0f62008.chunk.js"
+    "revision": "842c65586cb9b462559d",
+    "url": "/wordgame/static/js/main.012bfd6b.chunk.js"
   },
   {
     "revision": "55ba5d4549745ce35d13",
