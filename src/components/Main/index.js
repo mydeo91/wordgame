@@ -126,20 +126,25 @@ export class Main extends Component {
               marginLeft: 10
             }}
           >
-            <p style={{ margin: 5 }}>{displayName || "익명의 누군가"}</p>
-            {!displayName ? (
-              <div
-                style={{ margin: 5, cursor: "pointer" }}
-                onClick={() => {
-                  localStorage.removeItem("access_user");
-                  this.setState({ isLoggedIn: false });
-                }}
-              >
-                회원가입하기
-              </div>
-            ) : (
-              <></>
-            )}
+            <p style={{ margin: 0, marginTop: 5, textAlign: "center" }}>
+              {displayName || "익명의 누군가"}
+            </p>
+            <div
+              style={{
+                margin: 5,
+                cursor: "pointer",
+                backgroundColor: "rgb(255, 255, 255, 0.5)",
+                textAlign: "center",
+                padding: 5,
+                borderRadius: 5
+              }}
+              onClick={() => {
+                localStorage.removeItem("access_user");
+                this.setState({ isLoggedIn: false });
+              }}
+            >
+              {displayName ? "로그아웃" : "회원가입하기"}
+            </div>
           </div>
         </div>
         {!localStorage.getItem("game__status") ? (
