@@ -17,7 +17,7 @@ export default class Back extends Component {
           src={require("../../images/left-arrow-angle.png")}
           style={styles.image}
         />
-        Back
+        뒤로
       </div>
     );
   }
@@ -29,10 +29,17 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     cursor: "pointer",
-    fontSize: 15,
+    fontSize: 12,
     position: "absolute",
     bottom: 10,
-    left: 10
+    right: 10,
+    zIndex: 3,
+    width: 40,
+    height: 40,
+    borderRadius: 25,
+    backgroundColor: "rgb(255, 255, 255, 0.7)",
+    border: "2px solid rgb(0, 0, 0, 0.2)",
+    padding: 5
   },
   image: {
     width: 15,
