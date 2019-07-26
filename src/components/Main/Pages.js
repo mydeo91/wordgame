@@ -116,7 +116,17 @@ class Content extends React.Component {
       padding: 10,
       width: 260,
       cursor: "pointer",
-      zIndex: 2
+      zIndex: 2,
+      position: "relative"
+    },
+    contentCover: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgb(0, 0, 0, 0.3)",
+      zIndex: 3
     },
     contentRow: {
       width: 260,

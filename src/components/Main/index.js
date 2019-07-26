@@ -79,6 +79,8 @@ export class Main extends Component {
   OnMenu = () => {
     return this.state.isLoggedIn ? <this.LoggedOn /> : <this.SignIn />;
   };
+
+  // 로그인 스크린
   SignIn = () => {
     return (
       <>

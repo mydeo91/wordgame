@@ -6,6 +6,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-image: url("./images/background.png");
 }
+/* Disable dragging and selecting html elements (like links, images etc...) in Electron */
+*,
+*::after,
+*::before {
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-app-region: no-drag;
+  cursor: default;
+}
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",

@@ -23,29 +23,24 @@ export class Header extends Component {
   render() {
     return (
       <header style={styles.container}>
-        {/* {this.props.gameStart ? (
-          <OnGameStart item="삼행시" />
-        ) : (
-          <BeforeGameStart item="시작전" />
-        )} */}
         <Switch>
           <Route path="/" exact component={BeforeGameStart} />
-          <Route path="/ready" render={() => <OnGameStart item="준비해" />} />
-          <Route path="/game" render={() => <OnGameStart item="렛츠고" />} />
-          <Route path="/world" render={() => <OnGameStart item="드립장" />} />
-          <Route path="/profile" render={() => <OnGameStart item="내드립" />} />
-          <Route
-            path="/contribute"
-            render={() => <OnGameStart item="참여해" />}
-          />
+          <Route component={OnGameStart} />
         </Switch>
       </header>
     );
   }
 }
 
-const OnGameStart = ({ item }) => {
-  const valueArr = item.split("");
+const OnGameStart = ({ location }) => {
+  const items = {
+    "/ready": "준비해",
+    "/game": "렛츠고",
+    "/world": "드립장",
+    "/profile": "내드립",
+    "/contribute": "참여해"
+  };
+  const valueArr = items[location.pathname].split("");
   return (
     <>
       {valueArr.map((value, index) => (

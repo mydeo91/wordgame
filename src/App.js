@@ -4,20 +4,26 @@ import { firebaseConfig } from "./firebaseConfig";
 import { Header, Main, Footer } from "./components";
 import { BrowserRouter, Route } from "react-router-dom";
 import "./App.css";
+import Router from "./router";
 
 class App extends React.Component {
+  state = {
+    isLoggedIn: false
+  };
   componentDidMount() {
     this.project = initializeApp(firebaseConfig);
-    console.log(this.project.name);
+    // console.log(this.project.name);
+    this.setState({ isLoggedIn: Boolean(localStorage.getItem("access_user")) });
   }
   render() {
     return (
       <div style={styles.container}>
         <BrowserRouter>
           <div style={styles.contentWrapper}>
-            <Header gameStart={false} />
+            {/* <Header gameStart={false} />
             <Main />
-            <Footer />
+            <Footer /> */}
+            <Router isLoggedIn={this.state.isLoggedIn} />
           </div>
         </BrowserRouter>
       </div>
