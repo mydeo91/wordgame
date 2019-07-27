@@ -1,41 +1,35 @@
 import { observable, action, computed } from "mobx";
 
-export default class MarketStore {
-  @observable
-  selectedItems = [];
+export default class UsersStore {
+  // User inforemation
+  @observable user = JSON.parse(localStorage.getItem("user"));
+  @observable isLoggedIn = Boolean(this.user);
+  // @observable accessToken;
 
   @action
-  put = (name, price) => {
-    // 존재하는지 찾고
-    const exists = this.selectedItems.find(item => item.name === name);
-    if (!exists) {
-      // 존재하지 않는다면 새로 집어넣습니다.
-      this.selectedItems.push({
-        name,
-        price,
-        count: 1
-      });
-      return;
-    }
-    // 존재 한다면 count 값만 올립니다.
-    exists.count++;
+  login = user => {
+    const { uid, displayName, email, isAnonymous, photoURL } = user;
+    this.user = { uid, displayName, email, isAnonymous, photoURL };
+    localStorage.setItem("user", JSON.stringify(this.user));
+
+    // set login
+    this.isLoggedIn = true;
+    // alert("로그인 되었습니다.");
   };
 
   @action
-  take = name => {
-    const itemToTake = this.selectedItems.find(item => item.name === name);
-    itemToTake.count--;
-    if (itemToTake.count === 0) {
-      // 갯수가 0 이면
-      this.selectedItems.remove(itemToTake); // 배열에서 제거처리합니다.
-    }
+  logout = user => {
+    this.user = null;
+    localStorage.removeItem("user");
+
+    // set login
+    this.isLoggedIn = false;
+    alert("로그아웃 되었습니다.");
   };
 
-  @computed
-  get total() {
-    console.log("총합 계산...");
-    return this.selectedItems.reduce((previous, current) => {
-      return previous + current.price * current.count;
-    }, 0);
-  }
+  @action
+  update = user => {
+    this.user = null;
+    localStorage.removeItem("user");
+  };
 }

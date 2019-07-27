@@ -1,40 +1,50 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { inject, observer } from "mobx-react";
 
-export class Footer extends Component {
+@inject("users")
+@observer
+class Footer extends Component {
   render() {
     return (
       <footer style={styles.container}>
-        <div style={styles.contentWrapper}>
-          <a
-            href="https://open.kakao.com/o/s1uEaAwb"
-            target="_blank"
-            style={styles.imgWrapper}
-          >
-            <img
-              style={styles.chatImg}
-              src={require("../../images/openChatRoom.png")}
-            />
-          </a>
-          <div style={{ fontSize: 12 }}>광고주</div>
-        </div>
-        <div style={styles.contentWrapper}>
-          <a
-            href="https://open.kakao.com/o/s1uEaAwb"
-            target="_blank"
-            style={styles.imgWrapper}
-          >
-            <img
-              style={styles.chatImg}
-              src={require("../../images/openChatRoom.png")}
-            />
-          </a>
-          <div style={{ fontSize: 12 }}>아이디어</div>
-        </div>
+        {this.props.users.isLoggedIn ? <PrivateFooter /> : <PublicFooter />}
       </footer>
     );
   }
 }
+
+const PublicFooter = () => (
+  <>
+    <div style={styles.contentWrapper}>
+      <a
+        href="https://open.kakao.com/o/s1uEaAwb"
+        target="_blank"
+        style={styles.imgWrapper}
+      >
+        <img
+          style={styles.chatImg}
+          src={require("../../images/openChatRoom.png")}
+        />
+      </a>
+      <div style={{ fontSize: 12 }}>광고주</div>
+    </div>
+    <div style={styles.contentWrapper}>
+      <a
+        href="https://open.kakao.com/o/s1uEaAwb"
+        target="_blank"
+        style={styles.imgWrapper}
+      >
+        <img
+          style={styles.chatImg}
+          src={require("../../images/openChatRoom.png")}
+        />
+      </a>
+      <div style={{ fontSize: 12 }}>아이디어</div>
+    </div>
+  </>
+);
+
+const PrivateFooter = () => <div>Private</div>;
 
 const styles = {
   container: {
@@ -68,3 +78,5 @@ const styles = {
     marginBottom: 5
   }
 };
+
+export { Footer };

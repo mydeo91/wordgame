@@ -1,31 +1,27 @@
 import React from "react";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "./firebaseConfig";
+import { observable } from "mobx";
+import { inject, observer } from "mobx-react";
 import { Header, Main, Footer } from "./components";
 import { BrowserRouter, Route } from "react-router-dom";
 import "./App.css";
-import Router from "./router";
+import PageRouter from "./router";
 
+@inject("users")
+@observer
 class App extends React.Component {
-  state = {
-    isLoggedIn: false
-  };
   componentDidMount() {
     this.project = initializeApp(firebaseConfig);
-    // console.log(this.project.name);
-    this.setState({ isLoggedIn: Boolean(localStorage.getItem("access_user")) });
   }
   render() {
     return (
       <div style={styles.container}>
-        <BrowserRouter>
-          <div style={styles.contentWrapper}>
-            {/* <Header gameStart={false} />
-            <Main />
-            <Footer /> */}
-            <Router isLoggedIn={this.state.isLoggedIn} />
-          </div>
-        </BrowserRouter>
+        <div style={styles.contentWrapper}>
+          <BrowserRouter>
+            <PageRouter />
+          </BrowserRouter>
+        </div>
       </div>
     );
   }

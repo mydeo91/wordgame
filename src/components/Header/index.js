@@ -34,13 +34,18 @@ export class Header extends Component {
 
 const OnGameStart = ({ location }) => {
   const items = {
+    "/settings": "닉네임",
     "/ready": "준비해",
     "/game": "렛츠고",
     "/world": "드립장",
     "/profile": "내드립",
     "/contribute": "참여해"
   };
-  const valueArr = items[location.pathname].split("");
+  const target = items[location.pathname];
+  let valueArr = ["삼", "행", "시"];
+  if (target !== undefined) {
+    valueArr = items[location.pathname].split("");
+  }
   return (
     <>
       {valueArr.map((value, index) => (

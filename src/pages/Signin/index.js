@@ -1,15 +1,18 @@
 import React, { Component } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
+import { observer, inject } from "mobx-react";
 import MainButton from "../../components/Button/MainButton";
 
+@inject("users")
+@observer
 class SigninPage extends Component {
   state = {
     isFetching: false
   };
-
   // handle functions
   handleSignIn = async ({ type }) => {
+    const { users } = this.props;
     this.setState({
       isFetching: true
     });
@@ -21,22 +24,17 @@ class SigninPage extends Component {
       await firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           // User is signed in.
-          // var isAnonymous = user.isAnonymous;
-          // var uid = user.uid;
-          localStorage.setItem("access_user", JSON.stringify(user));
+          users.login(user);
         } else {
           // User is signed out.
-          localStorage.removeItem("access_user");
+          users.logout(user);
         }
         // ...
       });
 
-      this.setState(
-        {
-          isFetching: false
-        },
-        () => this.props.history.push("")
-      );
+      this.setState({
+        isFetching: false
+      });
     }
   };
   signInWithSocialAccount = async ({ type }) => {
@@ -72,9 +70,14 @@ class SigninPage extends Component {
           fnc={() => this.handleSignIn({ type: "Anonymous" })}
           title="둘러보기"
         />
+        <MainButton
+          fnc={() => this.props.history.push("/team")}
+          title="만든이들"
+        />
+        {this.state.isFetching && <div>로그인 중</div>}
       </>
     );
   }
 }
 
-export default SigninPage;
+export { SigninPage };

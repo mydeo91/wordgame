@@ -1,5 +1,7 @@
-// import Main from "./Main";
-// import Settings from "./Settings";
-import Signin from "./Signin";
-
-export { Signin };
+export * from "./Main";
+export * from "./Signin";
+export * from "./Game";
+export * from "./Settings";
+export * from "./Team";
+export * from "./Board";
+export * from "./Contribute";
