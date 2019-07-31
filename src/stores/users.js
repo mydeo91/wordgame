@@ -1,7 +1,11 @@
 import { observable, action, computed } from "mobx";
 import { firebase, userRef } from "../firebase";
 
-class UsersStore {
+class UserStore {
+  // root store
+  constructor(root) {
+    this.root = root;
+  }
   // User inforemation
   @observable user = JSON.parse(localStorage.getItem("user"));
   @observable isLoggedIn = Boolean(this.user);
@@ -59,6 +63,4 @@ class UsersStore {
   };
 }
 
-const userStore = new UsersStore();
-
-export default userStore;
+export default UserStore;

@@ -1,6 +1,12 @@
 import { observable, action, computed } from "mobx";
+import firebase, { userRef, gameRef } from "../firebase";
 
 class GameStore {
+  // root store
+  constructor(root) {
+    this.root = root;
+  }
+
   // Game inforemation
   @observable onStart = false;
   @observable round = currentRound().round;
@@ -40,6 +46,4 @@ function userActions() {
   return gameToken;
 }
 
-const gameStore = new GameStore();
-
-export default gameStore;
+export default GameStore;
