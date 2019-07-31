@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import firebase from "firebase/app";
+import firebase from "firebase";
 import "firebase/auth";
 import { observer, inject } from "mobx-react";
 import MainButton from "../../components/Button/MainButton";
@@ -17,14 +17,52 @@ class SigninPage extends Component {
       isFetching: true
     });
     try {
-      await this.signInWithSocialAccount({ type });
+      if (type === "Facebook") {
+        // set auth persistance for LOCAL
+        await firebase
+          .auth()
+          .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+          .then(() => {
+            // Facebook activity
+            const provider = new firebase.auth.FacebookAuthProvider();
+            firebase
+              .auth()
+              .signInWithPopup(provider)
+              .catch(function(error) {
+                // make error
+                throw error;
+              });
+            return firebase
+              .auth()
+              .signInWithPopup(provider)
+              .catch(function(error) {
+                // make error
+                throw error;
+              });
+          });
+      } else {
+        // set auth persistance for LOCAL
+        await firebase
+          .auth()
+          .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+          .then(() => {
+            // Anonymous activity
+            return firebase
+              .auth()
+              .signInAnonymously()
+              .catch(function(error) {
+                // make error
+                throw error;
+              });
+          });
+      }
     } catch (e) {
       console.error(`[${e.code}] ${e.message}`);
     } finally {
-      await firebase.auth().onAuthStateChanged(function(user) {
+      await firebase.auth().onAuthStateChanged(async function(user) {
         if (user) {
           // User is signed in.
-          users.login(user);
+          await users.login(user);
         } else {
           // User is signed out.
           users.logout(user);

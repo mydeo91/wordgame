@@ -76,7 +76,10 @@ class Content extends React.Component {
       width: 260,
       cursor: "pointer",
       zIndex: 2,
-      position: "relative"
+      position: "relative",
+      WebkitUserSelect: "none",
+      WebkitUserSrag: "none",
+      WebkitAppRegion: "no-drag"
     },
     contentCover: {
       position: "absolute",

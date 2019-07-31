@@ -1,29 +1,30 @@
 import React from "react";
+import firebase, { userRef } from "../../firebase";
 import { Link, Redirect } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 
-export const MainPage = inject("users")(
-  observer(() => {
+@inject("users")
+@observer
+class MainPage extends React.Component {
+  state = {
+    user: null
+  };
+  async componentDidMount() {
+    await this.props.users.fetchUser();
+    console.log(this.props.users.user);
+  }
+  render() {
     // 신규 사용자라면? 익명 제외 --> settings
     if (!localStorage.getItem("nickname")) return <Redirect to="/settings" />;
     return (
       <>
         <Header />
-        {!localStorage.getItem("game__status") ? (
-          <Link style={styles.button} to="/game">
-            게임시작
-          </Link>
-        ) : (
-          <>
-            <div style={{ marginBottom: 30 }}>
-              00회차 게임 시작까지 00분 00초
-            </div>
-            <Link style={styles.button} to="/world">
-              드립의 장으로 입장
-            </Link>
-          </>
-        )}
-
+        <Link style={styles.button} to="/game">
+          게임시작
+        </Link>
+        <Link style={styles.button} to="/world">
+          드립의 장으로 입장
+        </Link>
         <Link style={styles.button} to="/profile">
           마이페이지
         </Link>
@@ -32,12 +33,13 @@ export const MainPage = inject("users")(
         </Link>
       </>
     );
-  })
-);
+  }
+}
 
 const Header = inject("users")(
   observer(props => {
     const { photoURL, displayName } = JSON.parse(localStorage.getItem("user"));
+    const nickname = localStorage.getItem("nickname");
     return (
       <div
         style={{
@@ -63,7 +65,8 @@ const Header = inject("users")(
           }}
         >
           <p style={{ margin: 0, marginTop: 5, textAlign: "center" }}>
-            {displayName || "익명의 누군가"}
+            {displayName ? "" : `익명의 `}
+            {nickname}
           </p>
           <div
             style={{
@@ -121,3 +124,5 @@ const styles = {
     color: "inherit"
   }
 };
+
+export { MainPage };

@@ -18,7 +18,7 @@ export class Header extends Component {
   };
   componentDidMount() {
     // 현재 라운드 스테이트 체크
-    this.checkRoundState();
+    // this.checkRoundState();
   }
   render() {
     return (

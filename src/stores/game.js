@@ -1,16 +1,24 @@
 import { observable, action, computed } from "mobx";
 
-export default class GameStore {
+class GameStore {
   // Game inforemation
   @observable onStart = false;
+  @observable round = currentRound().round;
+  @observable target = currentRound().target;
 
   @action
-  start() {
+  start(user) {
+    console.log("[GAME-INFO]", this.round, this.target);
+    // 게임 가능여부
+    if (!userActions()) return;
+
+    // 게임 시작
     this.onStart = true;
     // 포인트 차감
-
+    console.log("[GAME-USER]", user);
     // 라운드 시작 플래그
   }
+
   @action
   end() {
     this.onStart = false;
@@ -18,3 +26,20 @@ export default class GameStore {
     // 결과 반영
   }
 }
+
+function currentRound() {
+  return { round: 10, target: "겜시작" };
+}
+
+function userActions() {
+  let gameToken = false;
+  // 게임이 가능한지 확인
+
+  // 포인트 차감
+
+  return gameToken;
+}
+
+const gameStore = new GameStore();
+
+export default gameStore;

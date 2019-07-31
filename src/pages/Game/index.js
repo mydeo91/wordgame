@@ -11,7 +11,7 @@ export const GameRouter = inject("game")(
     if (props.game.onStart) {
       return <GamePage {...props} />;
     } else {
-      return <ReadyPage />;
+      return <ReadyPage {...props} />;
     }
   })
 );

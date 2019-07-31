@@ -1,6 +1,7 @@
 import { observable, action, computed } from "mobx";
+import firebase, { userRef } from "../firebase";
 
-export default class UsersStore {
+class UsersStore {
   // User inforemation
   @observable user = JSON.parse(localStorage.getItem("user"));
   @observable isLoggedIn = Boolean(this.user);
@@ -18,11 +19,16 @@ export default class UsersStore {
   };
 
   @action
-  logout = user => {
-    this.user = null;
-    localStorage.removeItem("user");
+  logout = async user => {
+    Promise.all([
+      localStorage.removeItem("user"),
+      localStorage.removeItem("nickname")
+    ]);
 
-    // set login
+    await firebase.auth().logout();
+
+    // set logout
+    this.user = null;
     this.isLoggedIn = false;
     alert("로그아웃 되었습니다.");
   };
@@ -32,4 +38,24 @@ export default class UsersStore {
     this.user = null;
     localStorage.removeItem("user");
   };
+
+  @action
+  fetchUser = async () => {
+    await firebase.auth().onAuthStateChanged(user => this.getUser(user));
+  };
+
+  getUser = user => {
+    console.log(`[ACCESSED-USER-STORE] ${user.uid}`);
+    if (user) {
+      this.user = userRef
+        .doc(user.uid)
+        .get()
+        .then(doc => doc.data())
+        .catch(() => null);
+    }
+  };
 }
+
+const userStore = new UsersStore();
+
+export default userStore;

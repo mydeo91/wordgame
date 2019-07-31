@@ -1,21 +1,53 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import SubmitField from "../../components/InputField/Three";
 
 @inject("users")
 @observer
 class SettingsPage extends Component {
+  state = {
+    end: false
+  };
+  setNickname = async nickname => {
+    const firebase = require("firebase/app");
+    const url =
+      "http://localhost:5000/wordgame-71c4d/us-central1/userApi/users/settings";
+
+    // get uid from current login user.
+    const data = {
+      uid: firebase.auth().currentUser.uid,
+      nickname
+    };
+    console.log(JSON.stringify(data));
+    if (!data.uid) return;
+
+    // call function.
+    const resultStatus = await fetch(url, {
+      method: "POST",
+      "Content-Type": "application/json",
+      body: JSON.stringify(data)
+    })
+      .then(() => {
+        alert("닉네임 입력 완료");
+        return true;
+      })
+      .catch(error => {
+        alert("닉네임 입력 실패");
+        return false;
+      });
+    if (resultStatus) {
+      localStorage.setItem("nickname", data.nickname);
+      this.props.history.push("/");
+    }
+  };
   render() {
     return (
       <div style={styles.container}>
         <p style={styles.textGuide}>닉네임을 입력해주세요.</p>
         <SubmitField
           msg="닉네임 입력"
-          func={async nickname => {
-            await alert("DB에 씁니다");
-            localStorage.setItem("nickname", nickname);
-            this.props.history.push("/");
-          }}
+          func={nickname => this.setNickname(nickname)}
           {...this.props}
         />
       </div>

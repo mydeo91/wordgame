@@ -47,12 +47,12 @@ export default class ThreeWordInput extends React.Component {
     if (this.msg) alert(this.msg);
 
     // execute given function with input result...
-    if (this.func) await this.func(result);
+    if (this.func) this.func(result);
 
     // 마무리
-    this.setState({ 1: "", 2: "", 3: "" }, () => {
-      this.refs[1].focus();
-    });
+    // this.setState({ 1: "", 2: "", 3: "" }, () => {
+    //   this.refs[1].focus();
+    // });
   };
   handleChange = e => {
     const { name, value } = e.target;

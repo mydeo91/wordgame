@@ -24,7 +24,7 @@ const PrivateRoutes = props => (
   <div style={styles.container}>
     <Switch>
       <Route path="/" exact component={MainPage} />
-      <Route path="/settings" exact component={SettingsPage} />
+      <Route path="/settings" component={SettingsPage} />
       <Route path="/game" component={GameRouter} />
       <Route path="/world" component={BoardPage} />
       {/* <Route

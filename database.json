@@ -1,0 +1,57 @@
+// grade
+{
+    "0": {
+        "name": "입문",
+        "point": 0,
+        "logo": "https://google.........png"
+    },
+    "1": {
+        "name": "견습",
+        "point": 20,
+        "logo": "https://google.........png"
+    },
+    "2": {
+        "name": "장인",
+        "point": 50,
+        "logo": "https://google.........png"
+    }
+}
+
+// user
+{
+    "uid": "",
+    "displayName": "",
+    "nickname": "",
+    "photoURL": "",
+    "emial": "",
+    "isAnonymous": "",
+    "grade": "",
+    "point": {
+        "exp": 12,  // 누적 포인트
+        "point": 5  // like 획득 시 증가 / 게임 참여시 감소
+    },
+}
+
+// board
+{
+    "bid": "",
+    "uid": "",
+    "gid": "",
+    "pubDate": "",
+    "data": {
+        "1": "삼행시를 시작한다",
+        "2": "행복하다",
+        "3": "시작해보자"
+    },
+    "likes": 20
+}
+
+// game
+{
+    "gid": "",
+    "round": 1,
+    "date": "",
+    "target": "삼행시",
+    "boards": 20,
+    "likes": 500,
+}

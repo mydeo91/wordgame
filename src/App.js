@@ -1,26 +1,31 @@
 import React from "react";
-import { initializeApp } from "firebase/app";
-import { firebaseConfig } from "./firebaseConfig";
-import { observable } from "mobx";
+// import { initializeApp } from "firebase";
+// import { firebaseConfig } from "./firebaseConfig";
 import { inject, observer } from "mobx-react";
+import { Provider } from "mobx-react";
+import UsersStore from "./stores/users";
+import GameStore from "./stores/game";
 import { Header, Main, Footer } from "./components";
 import { BrowserRouter, Route } from "react-router-dom";
 import "./App.css";
 import PageRouter from "./router";
 
-@inject("users")
-@observer
 class App extends React.Component {
-  componentDidMount() {
-    this.project = initializeApp(firebaseConfig);
+  constructor(props) {
+    super(props);
+    this.users = UsersStore;
+    this.game = GameStore;
   }
+  componentDidMount() {}
   render() {
     return (
       <div style={styles.container}>
         <div style={styles.contentWrapper}>
-          <BrowserRouter>
-            <PageRouter />
-          </BrowserRouter>
+          <Provider users={this.users} game={this.game}>
+            <BrowserRouter>
+              <PageRouter />
+            </BrowserRouter>
+          </Provider>
         </div>
       </div>
     );
