@@ -9,9 +9,8 @@ class MainPage extends React.Component {
   state = {
     user: null
   };
-  async componentDidMount() {
-    await this.props.users.fetchUser();
-    console.log(this.props.users.user);
+  async componentWillMount() {
+    if (this.props.users.user) await this.props.users.fetchUser();
   }
   render() {
     // 신규 사용자라면? 익명 제외 --> settings
@@ -40,15 +39,21 @@ const Header = inject("users")(
   observer(props => {
     const { photoURL, displayName } = JSON.parse(localStorage.getItem("user"));
     const nickname = localStorage.getItem("nickname");
+    console.log(props.users.user);
+    console.log(props.users.user.point);
     return (
       <div
         style={{
           display: "flex",
           flexDirection: "row",
           alignContent: "center",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           marginTop: 10,
-          marginBottom: 20
+          marginBottom: 20,
+          paddingBottom: 10,
+          width: 300,
+          position: "relative",
+          borderBottom: "5px solid rgb(255, 255, 255, 0.2)"
         }}
       >
         <img
@@ -65,7 +70,7 @@ const Header = inject("users")(
           }}
         >
           <p style={{ margin: 0, marginTop: 5, textAlign: "center" }}>
-            {displayName ? "" : `익명의 `}
+            {displayName ? "" : <span style={{ fontSize: 12 }}>익명의</span>}
             {nickname}
           </p>
           <div
@@ -79,9 +84,34 @@ const Header = inject("users")(
             }}
             onClick={props.users.logout}
           >
-            {displayName ? "로그아웃" : "회원가입하기"}
+            {displayName ? "로그아웃" : "회원가입"}
           </div>
         </div>
+        {props.users.user.email ? (
+          <>
+            <div>
+              <div style={{ position: "absolute", top: -5, right: 95 }}>
+                등급
+              </div>
+              <div style={{ ...styles.circle, right: 85 }}>
+                {props.users.user.grade}
+              </div>
+            </div>
+            <div>
+              <div style={{ position: "absolute", top: -5, right: 32 }}>
+                포인트
+              </div>
+              <div style={styles.circle}>{props.users.user.point || 1}</div>
+            </div>
+          </>
+        ) : (
+          <div>
+            <div style={{ position: "absolute", top: -5, right: 32 }}>
+              포인트
+            </div>
+            <div style={styles.circle}>{props.users.user.point}</div>
+          </div>
+        )}
       </div>
     );
   })
@@ -105,7 +135,7 @@ const styles = {
   profileImage: {
     width: 50,
     height: 50,
-    // marginBottom: 20,
+    marginLeft: 30,
     borderRadius: 10
   },
   button: {
@@ -122,6 +152,21 @@ const styles = {
     cursor: "pointer",
     textDecoration: "none",
     color: "inherit"
+  },
+  circle: {
+    marginLeft: 10,
+    fontSize: 25,
+    fontWeight: "600",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 40,
+    height: 40,
+    borderRadius: 22.5,
+    border: "2.5px solid rgb(255, 255, 255, 0.3)",
+    position: "absolute",
+    top: 5,
+    right: 30
   }
 };
 

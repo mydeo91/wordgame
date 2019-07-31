@@ -1,5 +1,5 @@
 import { observable, action, computed } from "mobx";
-import firebase, { userRef } from "../firebase";
+import { firebase, userRef } from "../firebase";
 
 class UsersStore {
   // User inforemation
@@ -20,16 +20,15 @@ class UsersStore {
 
   @action
   logout = async user => {
+    this.user = null;
+    this.isLoggedIn = false;
     Promise.all([
       localStorage.removeItem("user"),
       localStorage.removeItem("nickname")
     ]);
 
-    await firebase.auth().logout();
-
     // set logout
-    this.user = null;
-    this.isLoggedIn = false;
+    await firebase.auth().signOut();
     alert("로그아웃 되었습니다.");
   };
 
@@ -41,16 +40,20 @@ class UsersStore {
 
   @action
   fetchUser = async () => {
-    await firebase.auth().onAuthStateChanged(user => this.getUser(user));
+    await firebase.auth().onAuthStateChanged(user => {
+      if (user) this.getUser(user);
+    });
   };
 
-  getUser = user => {
+  getUser = async user => {
     console.log(`[ACCESSED-USER-STORE] ${user.uid}`);
     if (user) {
-      this.user = userRef
+      this.user = await userRef
         .doc(user.uid)
         .get()
-        .then(doc => doc.data())
+        .then(doc => {
+          return doc.data();
+        })
         .catch(() => null);
     }
   };

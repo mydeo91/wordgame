@@ -10,4 +10,4 @@ const db = firebase.firestore();
 export const userRef = db.collection("users");
 export const gameRef = db.collection("games");
 
-export default firebase;
+export { firebase };

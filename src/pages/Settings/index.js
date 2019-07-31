@@ -29,7 +29,6 @@ class SettingsPage extends Component {
       body: JSON.stringify(data)
     })
       .then(() => {
-        alert("닉네임 입력 완료");
         return true;
       })
       .catch(error => {
@@ -37,8 +36,12 @@ class SettingsPage extends Component {
         return false;
       });
     if (resultStatus) {
-      localStorage.setItem("nickname", data.nickname);
-      this.props.history.push("/");
+      const { user, fetchUser } = this.props.users;
+      const { history } = this.props;
+      await fetchUser().then(function() {
+        localStorage.setItem("nickname", data.nickname);
+        history.push("/");
+      });
     }
   };
   render() {
