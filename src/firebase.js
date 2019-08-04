@@ -6,8 +6,9 @@ import { firebaseConfig } from "./firebaseConfig";
 firebase.initializeApp(firebaseConfig);
 
 // export db ref
-const db = firebase.firestore();
+export const db = firebase.firestore();
 export const userRef = db.collection("users");
+export const boardRef = db.collection("boards");
 export const gameRef = db.collection("games");
 
 export { firebase };

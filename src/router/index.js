@@ -6,6 +6,7 @@ import {
   MainPage,
   SigninPage,
   GameRouter,
+  GamePage,
   SettingsPage,
   TeamPage,
   BoardPage,
@@ -24,13 +25,11 @@ const PrivateRoutes = props => (
   <div style={styles.container}>
     <Switch>
       <Route path="/" exact component={MainPage} />
+      <Route path="/ready" component={GameRouter} />
+      <Route path="/game" component={GamePage} />
+      <Route path="/cround" component={BoardPage} />
+      <Route path="/around" component={BoardPage} />
       <Route path="/settings" component={SettingsPage} />
-      <Route path="/game" component={GameRouter} />
-      <Route path="/world" component={BoardPage} />
-      {/* <Route
-        path="/profile"
-        render={props => <Board type="profile" {...props} />}
-      /> */}
       <Route path="/contribute" component={Contribute} />
       <Route component={NoPage} />
     </Switch>

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import Word from "./Word";
+import { inject, observer } from "mobx-react";
 
 function checkRoundStateFunc() {
   // [연월시분:check] 와 같은 포맷으로 게임 여부를 체크해야함
@@ -12,7 +13,13 @@ function checkRoundStateFunc() {
   console.log(roundChecker ? "라운드 시작" : "라운드 종료");
 }
 
-export class Header extends Component {
+@inject("users", "game")
+@observer
+class Header extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   checkRoundState = () => {
     this.intervalId = setInterval(() => checkRoundStateFunc(), 1000);
   };
@@ -21,60 +28,77 @@ export class Header extends Component {
     // this.checkRoundState();
   }
   render() {
+    const { onStart, round, target } = this.props.game;
+    const { isLoggedIn } = this.props.users;
+    console.log(`[HEADER] `, { onStart, round, target });
+    console.log(`[HEADER] `, { onStart, round, target });
     return (
       <header style={styles.container}>
+        {/* {isLoggedIn ? "로그인" : "NULL"}
+        {onStart ? "시작합니다." : "준비합니다."} */}
         <Switch>
-          <Route path="/" exact component={BeforeGameStart} />
-          <Route component={OnGameStart} />
+          <Route path="/ready" exact component={BeforeGameReady} />
+          <Route path="/game" exact component={OnGameStart} />
+          <Route component={BeforeGameStart} />
         </Switch>
       </header>
     );
   }
 }
 
-const OnGameStart = ({ location }) => {
-  const items = {
-    "/settings": "닉네임",
-    "/ready": "준비해",
-    "/game": "렛츠고",
-    "/world": "드립장",
-    "/profile": "내드립",
-    "/contribute": "참여해"
-  };
-  const target = items[location.pathname];
-  let valueArr = ["삼", "행", "시"];
-  if (target !== undefined) {
-    valueArr = items[location.pathname].split("");
-  }
+const OnGameStart = inject("users", "game")(
+  observer(({ game }) => {
+    const target = game.target;
+    return <p>{target}</p>;
+  })
+);
+const BeforeGameStart = () => {
   return (
-    <>
-      {valueArr.map((value, index) => (
-        <Word key={index} value={value} />
-      ))}
-    </>
+    // <img
+    //   src={require("../../images/main_header.png")}
+    //   style={{ width: 250, position: "absolute", top: -100 }}
+    // />
+    <p>헤더</p>
   );
 };
-const BeforeGameStart = ({ item }) => {
-  item = "시작전";
-  const valueArr = item.split("");
-  return (
-    <>
-      {valueArr.map((value, index) => (
-        <Word key={index} value={value} />
-      ))}
-    </>
-  );
+const BeforeGameReady = () => {
+  return <p>게임 준비</p>;
 };
+// const BeforeGameStart = ({ item }) => {
+//   item = "시작전";
+//   const valueArr = item.split("");
+//   return (
+//     <>
+//       {valueArr.map((value, index) => (
+//         <Word key={index} value={value} />
+//       ))}
+//     </>
+//   );
+// };
+// const BeforeGameReady = ({ item = "시작전" }) => {
+//   const valueArr = item.split("");
+//   return (
+//     <>
+//       {valueArr.map((value, index) => (
+//         <Word key={index} value={value} />
+//       ))}
+//     </>
+//   );
+// };
 
 const styles = {
   container: {
-    height: 100,
+    height: 50,
     borderBottom: "1px solid rgba( 0, 0, 0, 0.2 )",
     paddingLeft: 20,
     paddingRight: 20,
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center"
+    // justifyContent: "space-between",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative"
   }
 };
+
+export { Header };

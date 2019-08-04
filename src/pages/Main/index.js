@@ -18,18 +18,18 @@ class MainPage extends React.Component {
     return (
       <>
         <Header />
-        <Link style={styles.button} to="/game">
-          게임시작
+        <Link style={styles.button} to="/ready">
+          시작
         </Link>
-        <Link style={styles.button} to="/world">
-          드립의 장으로 입장
+        <Link style={styles.button} to="/cround">
+          현재 라운드 게시글
         </Link>
-        <Link style={styles.button} to="/profile">
-          마이페이지
+        <Link style={styles.button} to="/around">
+          명예의 전당
         </Link>
-        <Link style={styles.button} to="/contribute">
+        {/* <Link style={styles.button} to="/contribute">
           문제 출제 참여하기
-        </Link>
+        </Link> */}
       </>
     );
   }
@@ -39,8 +39,6 @@ const Header = inject("users")(
   observer(props => {
     const { photoURL, displayName } = JSON.parse(localStorage.getItem("user"));
     const nickname = localStorage.getItem("nickname");
-    console.log(props.users.user);
-    console.log(props.users.user.point);
     return (
       <div
         style={{
@@ -101,7 +99,7 @@ const Header = inject("users")(
               <div style={{ position: "absolute", top: -5, right: 32 }}>
                 포인트
               </div>
-              <div style={styles.circle}>{props.users.user.point || 1}</div>
+              <div style={styles.circle}>{props.users.user.point}</div>
             </div>
           </>
         ) : (

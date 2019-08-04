@@ -187,12 +187,12 @@ export class Main extends Component {
           <Route path="/ready" component={Loading} />
           <Route path="/game" component={OnGame} />
           <Route
-            path="/world"
-            render={props => <Board type="world" {...props} />}
+            path="/cround"
+            render={props => <Board type="cround" {...props} />}
           />
           <Route
-            path="/profile"
-            render={props => <Board type="profile" {...props} />}
+            path="/around"
+            render={props => <Board type="around" {...props} />}
           />
           <Route path="/contribute" component={Contribute} />
         </Switch>

@@ -3,14 +3,20 @@ import { Redirect } from "react-router-dom";
 import { Wave, Random } from "react-animated-text";
 import { inject, observer } from "mobx-react";
 
-@inject("users", "game")
+@inject("game")
 @observer
 class ReadyPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sec: 5
+      sec: 5,
+      path: "/"
     };
+    this.checkPoint(0);
+    this.intervalId = setInterval(
+      () => this.setState(pre => ({ sec: pre.sec - 1 })),
+      1000
+    );
   }
 
   moveBack = () => {
@@ -18,18 +24,21 @@ class ReadyPage extends Component {
     this.props.history.push("/");
   };
 
-  componentDidMount() {
-    this.timer = setTimeout(this.moveBack, 7000);
-    this.intervalId = setInterval(
-      () => this.setState(pre => ({ sec: pre.sec - 1 })),
-      1000
-    );
-  }
-  componentWillUpdate() {
-    const { users, game } = this.props;
-    if (this.state.sec === 1) {
+  checkPoint = async type => {
+    const result = await this.props.game.start(type);
+    if (result.payload) {
+      console.log(`[BOARD-ID] ${result.payload}`);
+      this.setState({ path: "/game" });
+    } else {
+      alert(result.error);
+      this.props.history.push("/");
+    }
+  };
+
+  async componentWillUpdate() {
+    if (this.state.sec === 0) {
       clearInterval(this.intervalId);
-      game.start(users.user);
+      this.props.history.push(this.state.path);
     }
   }
   componentWillUnmount() {

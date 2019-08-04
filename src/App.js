@@ -39,7 +39,8 @@ const styles = {
     width: 300,
     minHeight: 400,
     backgroundColor: "rgba( 0, 0, 0, 0.2 )",
-    borderRadius: 10
+    borderRadius: 10,
+    border: "5px solid black"
     // display: "flex",
     // justifyContent: "flex-start",
     // flexDirection: "column"

@@ -23,7 +23,7 @@
     "displayName": "",
     "nickname": "",
     "photoURL": "",
-    "emial": "",
+    "email": "",
     "isAnonymous": "",
     "grade": "",
     "point": {
@@ -37,7 +37,7 @@
     "bid": "",
     "uid": "",
     "gid": "",
-    "pubDate": "",
+    "pubDate": timestamp(UTC+9),
     "data": {
         "1": "삼행시를 시작한다",
         "2": "행복하다",
@@ -48,10 +48,19 @@
 
 // game
 {
-    "gid": "",
-    "round": 1,
-    "date": "",
-    "target": "삼행시",
+    "gid": "",      // round
+    "round": 1,     // round
+    "date": timestamp(UTC+9),
+    "target": targets[gid],
     "boards": 20,
-    "likes": 500,
+    "likes": 0, // 해당 라운드의 좋아요 개수
+    "bid": []   // 처음에는 비어있다가 라운드 종료되면, like 상위로 5개를 명예의 전당으로 보냄
+}
+
+// targets
+{
+    "tid": "",
+    "confirm": boolean,
+    "referal": "",   // none: 관리자, uid: 사용자,
+    "created": timestamp,
 }
