@@ -159,7 +159,7 @@ const styles = {
     borderColor: "rgb(0, 0, 0, 0.2)",
     borderWidth: 0.1,
     zIndex: 9999,
-    fontFamily: "Jeju Hallasan"
+    fontFamily: "East Sea Dokdo"
   },
   timer: {
     position: "absolute",

@@ -1,7 +1,7 @@
-@import url(https://fonts.googleapis.com/earlyaccess/jejuhallasan.css);
+@import url("https://fonts.googleapis.com/css?family=East+Sea+Dokdo&display=swap");
 body {
   margin: 0;
-  font-family: "Jeju Hallasan", serif;
+  font-family: "East Sea Dokdo", cursive;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-image: url("./images/background.png");

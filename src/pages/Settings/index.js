@@ -7,9 +7,10 @@ import SubmitField from "../../components/InputField/Three";
 @observer
 class SettingsPage extends Component {
   state = {
-    end: false
+    isFetching: false
   };
   setNickname = async nickname => {
+    this.setState({ isFetching: true });
     const firebase = require("firebase/app");
     const url =
       "http://localhost:5000/wordgame-71c4d/us-central1/userApi/users/settings";
@@ -32,6 +33,7 @@ class SettingsPage extends Component {
         return true;
       })
       .catch(error => {
+        console.log(error);
         alert("닉네임 입력 실패");
         return false;
       });
@@ -48,11 +50,15 @@ class SettingsPage extends Component {
     return (
       <div style={styles.container}>
         <p style={styles.textGuide}>닉네임을 입력해주세요.</p>
-        <SubmitField
-          msg="닉네임 입력"
-          func={nickname => this.setNickname(nickname)}
-          {...this.props}
-        />
+        {this.state.isFetching ? (
+          <div>Loading....</div>
+        ) : (
+          <SubmitField
+            msg="닉네임 입력"
+            func={nickname => this.setNickname(nickname)}
+            {...this.props}
+          />
+        )}
       </div>
     );
   }
@@ -81,7 +87,7 @@ const styles = {
     textAlign: "center",
     fontSize: 40,
     fontWeight: "600",
-    fontFamily: "Jeju Hallasan",
+    fontFamily: "East Sea Dokdo",
     marginLeft: 5,
     marginRight: 5
   }

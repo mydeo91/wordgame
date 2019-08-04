@@ -12,10 +12,6 @@ import PageRouter from "./router";
 const root = new RootStore();
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  componentDidMount() {}
   render() {
     return (
       <div style={styles.container}>

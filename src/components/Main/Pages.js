@@ -394,7 +394,7 @@ Submit.style = {
     textAlign: "center",
     fontSize: 40,
     fontWeight: "600",
-    fontFamily: "Jeju Hallasan",
+    fontFamily: "East Sea Dokdo",
     marginLeft: 5,
     marginRight: 5
   }
