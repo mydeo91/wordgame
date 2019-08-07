@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import firebase from "firebase";
-import "firebase/auth";
+import { firebase } from "../../firebase";
 import { observer, inject } from "mobx-react";
 import MainButton from "../../components/Button/MainButton";
 
@@ -8,11 +7,15 @@ import MainButton from "../../components/Button/MainButton";
 @observer
 class SigninPage extends Component {
   state = {
-    isFetching: false
+    isFetching: false,
+    authResult: null
   };
+  componentDidMount() {
+    this.props.users.logout();
+  }
   // handle functions
   handleSignIn = async ({ type }) => {
-    const { users } = this.props;
+    const { login, logout } = this.props.users;
     this.setState({
       isFetching: true
     });
@@ -25,13 +28,6 @@ class SigninPage extends Component {
           .then(() => {
             // Facebook activity
             const provider = new firebase.auth.FacebookAuthProvider();
-            firebase
-              .auth()
-              .signInWithPopup(provider)
-              .catch(function(error) {
-                // make error
-                throw error;
-              });
             return firebase
               .auth()
               .signInWithPopup(provider)
@@ -59,42 +55,22 @@ class SigninPage extends Component {
     } catch (e) {
       console.error(`[${e.code}] ${e.message}`);
     } finally {
-      await firebase.auth().onAuthStateChanged(async function(user) {
-        if (user) {
-          // User is signed in.
-          await users.login(user);
-        } else {
-          // User is signed out.
-          users.logout(user);
-        }
-        // ...
-      });
+      const authResult = await firebase
+        .auth()
+        .onAuthStateChanged(function(user) {
+          if (user) {
+            // User is signed in.
+            return login(user);
+          } else {
+            // User is signed out.
+            return logout(user);
+          }
+        });
 
       this.setState({
-        isFetching: false
+        isFetching: false,
+        authResult
       });
-    }
-  };
-  signInWithSocialAccount = async ({ type }) => {
-    if (type === "Facebook") {
-      // Facebook activity
-      const provider = await new firebase.auth.FacebookAuthProvider();
-      await firebase
-        .auth()
-        .signInWithPopup(provider)
-        .catch(function(error) {
-          // make error
-          throw error;
-        });
-    } else {
-      // Anonymous activity
-      await firebase
-        .auth()
-        .signInAnonymously()
-        .catch(function(error) {
-          // make error
-          throw error;
-        });
     }
   };
   render() {

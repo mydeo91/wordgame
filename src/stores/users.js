@@ -7,23 +7,33 @@ class UserStore {
     this.root = root;
   }
   // User inforemation
+  // displayName, email, grade, isAnonymous, nickname, photoURL, point, uid
   @observable user = JSON.parse(localStorage.getItem("user"));
   @observable isLoggedIn = Boolean(this.user);
   // @observable accessToken;
 
   @action
-  login = user => {
+  login = async user => {
     const { uid, displayName, email, isAnonymous, photoURL } = user;
-    this.user = { uid, displayName, email, isAnonymous, photoURL };
+
+    // get user info from firestore
+    this.user = await userRef
+      .doc(uid)
+      .get()
+      .then(doc => {
+        return doc.data();
+      })
+      .catch(() => null);
     localStorage.setItem("user", JSON.stringify(this.user));
 
     // set login
     this.isLoggedIn = true;
-    // alert("로그인 되었습니다.");
+    alert("로그인 되었습니다.");
+    return this.user;
   };
 
   @action
-  logout = async user => {
+  logout = async () => {
     this.user = null;
     this.isLoggedIn = false;
     Promise.all([
@@ -32,8 +42,15 @@ class UserStore {
     ]);
 
     // set logout
-    await firebase.auth().signOut();
-    alert("로그아웃 되었습니다.");
+    return firebase
+      .auth()
+      .signOut()
+      .then(function() {
+        return true;
+      })
+      .catch(function() {
+        return false;
+      });
   };
 
   @action
@@ -44,13 +61,16 @@ class UserStore {
 
   @action
   fetchUser = async () => {
-    await firebase.auth().onAuthStateChanged(user => {
-      if (user) this.getUser(user);
+    return await firebase.auth().onAuthStateChanged(user => {
+      if (user) return this.getUser(user);
     });
   };
 
+  setUser(user) {
+    this.user = user;
+  }
+
   getUser = async user => {
-    console.log(`[ACCESSED-USER-STORE] ${user.uid}`);
     if (user) {
       this.user = await userRef
         .doc(user.uid)

@@ -6,9 +6,11 @@ class GameStore {
   constructor(root) {
     this.root = root;
     this.currentRound();
+    this.checkEnableGame();
   }
 
   // Game inforemation
+  @observable enableGame = true;
   @observable onStart = false;
   @observable round = 0;
   @observable boardId;
@@ -78,8 +80,6 @@ class GameStore {
 
   @action
   async end(data) {
-    this.onStart = false;
-
     if (data !== undefined) {
       // 결과 반영
       return await boardRef
@@ -87,9 +87,11 @@ class GameStore {
         .update({ data })
         .then(() => {
           console.log("데이터 입력 완료");
+          this.clear();
         })
         .catch(err => {
           console.error(err);
+          this.clear();
           throw "보드 업데이트 에러";
         });
     }
@@ -99,6 +101,26 @@ class GameStore {
   clear() {
     this.onStart = false;
     this.boardId = null;
+  }
+
+  @action
+  getGameEnable() {
+    return this.enableGame;
+  }
+
+  enableGame() {
+    this.enableGame = true;
+  }
+  disableGame() {
+    this.enableGame = false;
+  }
+
+  check() {
+    const currentTime = new Date();
+    const min = currentTime.getMinutes();
+  }
+  checkEnableGame() {
+    // this.checkEnableIntervalId = setInterval(this.check, 1000);
   }
 
   setBoardId(boardId) {

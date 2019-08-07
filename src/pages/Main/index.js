@@ -1,26 +1,44 @@
-import React from "react";
+import React, { Component } from "react";
 import firebase, { userRef } from "../../firebase";
 import { Link, Redirect } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 
-@inject("users")
+@inject("users", "game")
 @observer
 class MainPage extends React.Component {
   state = {
-    user: null
+    user: null,
+    enableGame: true,
+    isFetching: false
   };
-  async componentWillMount() {
-    if (this.props.users.user) await this.props.users.fetchUser();
+  async componentDidMount() {
+    await this.props.users.fetchUser();
+    this.setState({ isFetching: true });
   }
+  fetchGameStatus = () => {
+    var target = this.props.game.getGameEnable();
+    console.log("fetch game status", target);
+    if (this.state.enableGame !== target) {
+      this.setState({ enableGame: target });
+    }
+  };
   render() {
     // 신규 사용자라면? 익명 제외 --> settings
-    if (!localStorage.getItem("nickname")) return <Redirect to="/settings" />;
+    if (!this.props.users.user.nickname) return <Redirect to="/settings" />;
     return (
       <>
-        <Header />
-        <Link style={styles.button} to="/ready">
-          시작
-        </Link>
+        {this.state.isFetching ? (
+          <Header user={this.props.users.user} />
+        ) : (
+          <p>Loading</p>
+        )}
+        {this.props.game.enableGame ? (
+          <Link style={styles.button} to="/ready">
+            시작
+          </Link>
+        ) : (
+          <p>{this.props.game.round + 1} 라운드 준비 중</p>
+        )}
         <Link style={styles.button} to="/cround">
           현재 라운드 게시글
         </Link>
@@ -35,10 +53,18 @@ class MainPage extends React.Component {
   }
 }
 
-const Header = inject("users")(
-  observer(props => {
-    const { photoURL, displayName } = JSON.parse(localStorage.getItem("user"));
-    const nickname = localStorage.getItem("nickname");
+@inject("users")
+@observer
+class Header extends Component {
+  render() {
+    const {
+      photoURL,
+      displayName,
+      email,
+      grade,
+      point,
+      nickname
+    } = this.props.user;
     return (
       <div
         style={{
@@ -80,26 +106,24 @@ const Header = inject("users")(
               padding: 5,
               borderRadius: 5
             }}
-            onClick={props.users.logout}
+            onClick={this.props.users.logout}
           >
             {displayName ? "로그아웃" : "회원가입"}
           </div>
         </div>
-        {props.users.user.email ? (
+        {email ? (
           <>
             <div>
               <div style={{ position: "absolute", top: -5, right: 95 }}>
                 등급
               </div>
-              <div style={{ ...styles.circle, right: 85 }}>
-                {props.users.user.grade}
-              </div>
+              <div style={{ ...styles.circle, right: 85 }}>{grade}</div>
             </div>
             <div>
               <div style={{ position: "absolute", top: -5, right: 32 }}>
                 포인트
               </div>
-              <div style={styles.circle}>{props.users.user.point}</div>
+              <div style={styles.circle}>{point}</div>
             </div>
           </>
         ) : (
@@ -107,13 +131,13 @@ const Header = inject("users")(
             <div style={{ position: "absolute", top: -5, right: 32 }}>
               포인트
             </div>
-            <div style={styles.circle}>{props.users.user.point}</div>
+            <div style={styles.circle}>{point}</div>
           </div>
         )}
       </div>
     );
-  })
-);
+  }
+}
 
 const styles = {
   container: {

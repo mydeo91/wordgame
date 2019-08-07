@@ -30,8 +30,6 @@ class Header extends Component {
   render() {
     const { onStart, round, target } = this.props.game;
     const { isLoggedIn } = this.props.users;
-    console.log(`[HEADER] `, { onStart, round, target });
-    console.log(`[HEADER] `, { onStart, round, target });
     return (
       <header style={styles.container}>
         {/* {isLoggedIn ? "로그인" : "NULL"}

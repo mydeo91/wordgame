@@ -13,7 +13,8 @@ class SettingsPage extends Component {
     this.setState({ isFetching: true });
     const firebase = require("firebase/app");
     const url =
-      "http://localhost:5000/wordgame-71c4d/us-central1/userApi/users/settings";
+      // "http://localhost:5000/wordgame-71c4d/us-central1/userApi/users/settings";
+      "https://us-central1-wordgame-71c4d.cloudfunctions.net/userApi/users/settings";
 
     // get uid from current login user.
     const data = {

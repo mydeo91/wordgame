@@ -26,3 +26,5 @@ yarn-error.log*
 src/firebaseConfig.js
 package-lock.json
 zz.*
+.firebaserc
+.firebase/hosting.YnVpbGQ.cache

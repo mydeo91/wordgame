@@ -172,7 +172,7 @@ export class BoardPage extends React.Component {
               }}
             />
           </div>
-          <BackButton {...this.props} />
+          <BackButton target="/" {...this.props} />
         </div>
       </>
     );
