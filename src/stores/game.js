@@ -10,7 +10,7 @@ class GameStore {
   }
 
   // Game inforemation
-  @observable enableGame = true;
+  @observable enableGame = false;
   @observable onStart = false;
   @observable round = 0;
   @observable boardId;
@@ -105,6 +105,7 @@ class GameStore {
 
   @action
   getGameEnable() {
+    this.enableGame = this.check();
     return this.enableGame;
   }
 
@@ -116,8 +117,8 @@ class GameStore {
   }
 
   check() {
-    const currentTime = new Date();
-    const min = currentTime.getMinutes();
+    const currentMin = new Date().getMinutes();
+    return currentMin < 50;
   }
   checkEnableGame() {
     // this.checkEnableIntervalId = setInterval(this.check, 1000);
@@ -184,8 +185,11 @@ class GameStore {
   // board
   @action
   async getBoard(gameId) {
+    const round = this.round;
+    console.log(round);
     return boardRef
-      .where("gameId", "==", 76)
+      .where("gameId", "==", round)
+      .orderBy("pubDate", "desc")
       .get()
       .then(snapshot => {
         const payload = [];

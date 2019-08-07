@@ -8,12 +8,14 @@ import { inject, observer } from "mobx-react";
 class MainPage extends React.Component {
   state = {
     user: null,
-    enableGame: true,
+    enableGame: false,
     isFetching: false
   };
   async componentDidMount() {
     await this.props.users.fetchUser();
-    this.setState({ isFetching: true });
+    const enableGame = await this.props.game.getGameEnable();
+    console.log("[[[]]]", enableGame);
+    this.setState({ enableGame, isFetching: true });
   }
   fetchGameStatus = () => {
     var target = this.props.game.getGameEnable();
@@ -24,20 +26,21 @@ class MainPage extends React.Component {
   };
   render() {
     // 신규 사용자라면? 익명 제외 --> settings
+    const { enableGame, isFetching } = this.state;
+    const {
+      users: { user },
+      game: { round }
+    } = this.props;
     if (!this.props.users.user.nickname) return <Redirect to="/settings" />;
     return (
       <>
-        {this.state.isFetching ? (
-          <Header user={this.props.users.user} />
-        ) : (
-          <p>Loading</p>
-        )}
-        {this.props.game.enableGame ? (
+        {isFetching ? <Header user={this.props.users.user} /> : <p>Loading</p>}
+        {enableGame ? (
           <Link style={styles.button} to="/ready">
             시작
           </Link>
         ) : (
-          <p>{this.props.game.round + 1} 라운드 준비 중</p>
+          <p>다음 라운드 : {round ? round + 1 : "-"} 라운드 준비 중</p>
         )}
         <Link style={styles.button} to="/cround">
           현재 라운드 게시글

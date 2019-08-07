@@ -100,8 +100,6 @@ class Content extends React.Component {
 class BoardPage extends React.Component {
   constructor(props) {
     super(props);
-    // 현재 라운드 정보
-    this.roundInfo = props.game.currentRound(); // round, target
 
     // init state
     this.state = {
@@ -111,7 +109,11 @@ class BoardPage extends React.Component {
     };
   }
   async componentDidMount() {
-    const { payload, error } = await this.props.game.getBoard();
+    // 현재 라운드 정보
+    this.roundInfo = await this.props.game.currentRound(); // round, target
+    const { payload, error } = await this.props.game.getBoard(
+      this.roundInfo.round
+    );
     console.log(payload, error);
     this.setState({ payload, error, isFetching: true });
   }
