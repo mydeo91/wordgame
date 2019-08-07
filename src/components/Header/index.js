@@ -35,8 +35,8 @@ class Header extends Component {
         {/* {isLoggedIn ? "로그인" : "NULL"}
         {onStart ? "시작합니다." : "준비합니다."} */}
         <Switch>
-          <Route path="/ready" exact component={BeforeGameReady} />
-          <Route path="/game" exact component={OnGameStart} />
+          {/* <Route path="/ready" exact component={BeforeGameReady} />
+          <Route path="/game" exact component={OnGameStart} /> */}
           <Route component={BeforeGameStart} />
         </Switch>
       </header>
@@ -52,11 +52,13 @@ const OnGameStart = inject("users", "game")(
 );
 const BeforeGameStart = () => {
   return (
-    // <img
-    //   src={require("../../images/main_header.png")}
-    //   style={{ width: 250, position: "absolute", top: -100 }}
-    // />
-    <p>헤더</p>
+    <>
+      <img
+        src={require("../../images/main_header.png")}
+        style={{ width: 250, position: "absolute", top: -100 }}
+      />
+      <p>헤더</p>
+    </>
   );
 };
 const BeforeGameReady = () => {

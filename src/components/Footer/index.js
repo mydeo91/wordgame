@@ -5,11 +5,15 @@ import { inject, observer } from "mobx-react";
 @observer
 class Footer extends Component {
   render() {
-    return (
-      <footer style={styles.container}>
-        {this.props.users.isLoggedIn ? <PrivateFooter /> : <PublicFooter />}
-      </footer>
-    );
+    if (this.props.users.isLoggedIn) {
+      return <></>;
+    } else {
+      return (
+        <footer style={styles.container}>
+          <PublicFooter />
+        </footer>
+      );
+    }
   }
 }
 

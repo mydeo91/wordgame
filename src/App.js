@@ -32,7 +32,7 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 40,
+    marginTop: 60,
     marginBottom: 40
   },
   contentWrapper: {

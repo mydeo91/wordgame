@@ -10,22 +10,25 @@ import {
   SettingsPage,
   TeamPage,
   BoardPage,
-  Contribute
+  Contribute,
+  Test
 } from "../pages";
 
 const Router = inject("users")(
   observer(({ users }) => [
     users.isLoggedIn ? <Header key={1} /> : <Header key={1} />,
     users.isLoggedIn ? <PrivateRoutes key={2} /> : <PublicRoutes key={2} />,
-    users.isLoggedIn ? <Footer key={3} /> : <Footer key={3} />
+    <Footer key={3} />
   ])
 );
 
 const PrivateRoutes = props => (
   <div style={styles.container}>
     <Switch>
+      {/* <Route path="/" exact component={Test} /> */}
       <Route path="/" exact component={MainPage} />
       <Route path="/ready" component={GameRouter} />
+      {/* <Route path="/ready" component={Test} /> */}
       <Route path="/game" component={GamePage} />
       <Route path="/cround" component={BoardPage} />
       <Route path="/around" component={BoardPage} />

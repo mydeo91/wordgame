@@ -14,7 +14,7 @@ class GameStore {
   @observable onStart = false;
   @observable round = 0;
   @observable boardId;
-  @observable target;
+  @observable target = "";
   gamePoint = {
     0: 1,
     1: 10
