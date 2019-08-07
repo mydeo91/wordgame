@@ -151,6 +151,7 @@ class GameStore {
       });
   }
 
+  @action
   async currentRound() {
     return await gameRef
       .orderBy("round", "desc")
@@ -177,6 +178,33 @@ class GameStore {
       .catch(err => {
         console.error(err);
         throw "현재 라운드 조회 에러";
+      });
+  }
+
+  // board
+  @action
+  async getBoard(gameId) {
+    return boardRef
+      .where("gameId", "==", 76)
+      .get()
+      .then(snapshot => {
+        const payload = [];
+        if (snapshot.empty) return { payload, error: "No data" };
+
+        snapshot.forEach(item => {
+          payload.push(item.data());
+        });
+
+        // Promise([
+        //   () =>
+        //     snapshot.forEach(item => {
+        //       payload.push(item);
+        //       return true;
+        //     }),
+        //   () => payload.sort((a, b) => a.pubDate - b.pubDate)
+        // ]);
+
+        return { payload, error: null };
       });
   }
 }

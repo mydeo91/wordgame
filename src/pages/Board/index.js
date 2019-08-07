@@ -1,5 +1,6 @@
 import React from "react";
 import BackButton from "../../components/Button/Back";
+import { inject, observer } from "mobx-react";
 class Content extends React.Component {
   state = {
     holdTime: 0
@@ -25,13 +26,7 @@ class Content extends React.Component {
     this.setState({ holdTime: 0, isHold: false });
   };
   render() {
-    const { likes, profile, content } = this.props;
-    console.log(this.state.holdTime);
-    const color = {
-      장인: "red",
-      견습공: "green",
-      입문: "black"
-    };
+    const { data, likes } = this.props.content;
     return (
       <div
         style={{
@@ -40,8 +35,7 @@ class Content extends React.Component {
           backgroundColor:
             this.state.holdTime >= this.limitTime
               ? "rgb(255, 0, 0, 0.5)"
-              : "rgb(255, 255, 255, 0.5)",
-          color: color[this.props.profile.grade]
+              : "rgb(255, 255, 255, 0.5)"
         }}
         onTouchStart={this.handleButtonPress}
         onTouchEnd={this.handleButtonRelease}
@@ -57,9 +51,9 @@ class Content extends React.Component {
             zIndex: 1
           }}
         >
-          좋아요: {likes}개 / {profile.grade} {profile.nickname}
+          좋아요: {likes}개
         </div>
-        {content.map((item, key) => (
+        {Object.values(data).map((item, key) => (
           <div key={key} style={this.styles.contentRow}>
             {item}
           </div>
@@ -101,51 +95,50 @@ class Content extends React.Component {
   };
 }
 
-export class BoardPage extends React.Component {
+@inject("game")
+@observer
+class BoardPage extends React.Component {
+  constructor(props) {
+    super(props);
+    // 현재 라운드 정보
+    this.roundInfo = props.game.currentRound(); // round, target
+
+    // init state
+    this.state = {
+      payload: null,
+      isFetching: false,
+      error: null
+    };
+  }
+  async componentDidMount() {
+    const { payload, error } = await this.props.game.getBoard();
+    console.log(payload, error);
+    this.setState({ payload, error, isFetching: true });
+  }
   render() {
     const { pathname } = this.props.location;
-    const data = {
-      likes: 10,
-      pupDate: "2019-07-19",
-      profile: {
-        grade: "장인",
-        nickname: "얼쑤10"
-      },
-      content: ["1111", "2222", "3333"]
-    };
-    const data2 = {
-      likes: 5,
-      pupDate: "2019-07-19",
-      profile: {
-        grade: "견습공",
-        nickname: "빠다10"
-      },
-      content: ["1111", "2222", "3333"]
-    };
-    const data3 = {
-      likes: 0,
-      pupDate: "2019-07-19",
-      profile: {
-        grade: "입문",
-        nickname: "오노10"
-      },
-      content: ["1111", "2222", "3333"]
-    };
+    const { payload, isFetching, error } = this.state;
+    // payload = {
+    //   data: {
+    //     0: "",
+    //     1: "",
+    //     2: "",
+    //   },
+    //   gameId,
+    //   likes,
+    //   pubDate,
+    //   uid
+    // }
     return (
       <>
-        <div style={BoardPage.styles.container}>
-          <div style={BoardPage.styles.boardWrapper}>
-            {/* 3개의 컨텐츠까지만 */}
-            <Content {...data} />
-            <Content {...data2} />
-            <Content {...data3} />
-            <Content {...data} />
-            <Content {...data2} />
-            <Content {...data3} />
-            <Content {...data} />
-            <Content {...data2} />
-            <Content {...data3} />
-            <Content {...data3} />
+        <div style={styles.container}>
+          <div style={styles.boardWrapper}>
+            {!isFetching && <p>Loading...</p>}
+            {isFetching &&
+              payload &&
+              payload.map((content, key) => (
+                <Content key={key} content={content} />
+              ))}
           </div>
           <div
             style={{
@@ -179,7 +172,7 @@ export class BoardPage extends React.Component {
   }
 }
 
-BoardPage.styles = {
+const styles = {
   container: {
     top: 0,
     width: 280,
@@ -202,3 +195,5 @@ BoardPage.styles = {
     marginBottom: 20
   }
 };
+
+export { BoardPage };
