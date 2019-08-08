@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
+import { firebase } from "../../firebase";
 import { inject, observer } from "mobx-react";
 import SubmitField from "../../components/InputField/Three";
 
@@ -11,38 +12,21 @@ class SettingsPage extends Component {
   };
   setNickname = async nickname => {
     this.setState({ isFetching: true });
-    const firebase = require("firebase/app");
-    const url =
-      // "http://localhost:5000/wordgame-71c4d/us-central1/userApi/users/settings";
-      "https://us-central1-wordgame-71c4d.cloudfunctions.net/userApi/users/settings";
 
     // get uid from current login user.
     const data = {
       uid: firebase.auth().currentUser.uid,
+      // uid: this.props.users.user.uid,
       nickname
     };
-    console.log(JSON.stringify(data));
-    if (!data.uid) return;
 
-    // call function.
-    const resultStatus = await fetch(url, {
-      method: "POST",
-      "Content-Type": "application/json",
-      body: JSON.stringify(data)
-    })
-      .then(() => {
-        return true;
-      })
-      .catch(error => {
-        console.log(error);
-        alert("닉네임 입력 실패");
-        return false;
-      });
+    const resultStatus = await this.props.users.setNickname(data);
+
     if (resultStatus) {
       const { user, fetchUser } = this.props.users;
       const { history } = this.props;
       await fetchUser().then(function() {
-        localStorage.setItem("nickname", data.nickname);
+        // localStorage.setItem("nickname", data.nickname);
         history.push("/");
       });
     }

@@ -7,73 +7,25 @@ import MainButton from "../../components/Button/MainButton";
 @observer
 class SigninPage extends Component {
   state = {
-    isFetching: false,
-    authResult: null
+    isLoading: false,
+    error: null
   };
-  componentDidMount() {
-    this.props.users.logout();
-  }
   // handle functions
   handleSignIn = async ({ type }) => {
-    const { login, logout } = this.props.users;
-    this.setState({
-      isFetching: true
-    });
+    this.setState({ isLoading: true });
+    const { signIn } = this.props.users;
     try {
-      if (type === "Facebook") {
-        // set auth persistance for LOCAL
-        await firebase
-          .auth()
-          .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-          .then(() => {
-            // Facebook activity
-            const provider = new firebase.auth.FacebookAuthProvider();
-            return firebase
-              .auth()
-              .signInWithPopup(provider)
-              .catch(function(error) {
-                // make error
-                throw error;
-              });
-          });
-      } else {
-        // set auth persistance for LOCAL
-        await firebase
-          .auth()
-          .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-          .then(() => {
-            // Anonymous activity
-            return firebase
-              .auth()
-              .signInAnonymously()
-              .catch(function(error) {
-                // make error
-                throw error;
-              });
-          });
-      }
+      signIn(type);
     } catch (e) {
       console.error(`[${e.code}] ${e.message}`);
+      this.setState({ error: "로그인 에러" });
     } finally {
-      const authResult = await firebase
-        .auth()
-        .onAuthStateChanged(function(user) {
-          if (user) {
-            // User is signed in.
-            return login(user);
-          } else {
-            // User is signed out.
-            return logout(user);
-          }
-        });
-
-      this.setState({
-        isFetching: false,
-        authResult
-      });
+      this.setState({ isLoading: false });
     }
   };
   render() {
+    const { isLoading, error } = this.state;
+    if (error) alert(error);
     return (
       <>
         <MainButton
@@ -88,7 +40,7 @@ class SigninPage extends Component {
           fnc={() => this.props.history.push("/team")}
           title="만든이들"
         />
-        {this.state.isFetching && <div>로그인 중</div>}
+        {isLoading && <div>로그인 중</div>}
       </>
     );
   }

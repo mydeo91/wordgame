@@ -14,7 +14,6 @@ class MainPage extends React.Component {
   async componentDidMount() {
     await this.props.users.fetchUser();
     const enableGame = await this.props.game.getGameEnable();
-    console.log("[[[]]]", enableGame);
     this.setState({ enableGame, isFetching: true });
   }
   fetchGameStatus = () => {
@@ -31,7 +30,12 @@ class MainPage extends React.Component {
       users: { user },
       game: { round }
     } = this.props;
-    if (!this.props.users.user.nickname) return <Redirect to="/settings" />;
+    try {
+      if (this.props.users.user.nickname === "") throw "set nickname";
+    } catch (error) {
+      console.error(error);
+      return <Redirect to="/settings" />;
+    }
     return (
       <>
         {isFetching ? <Header user={this.props.users.user} /> : <p>Loading</p>}

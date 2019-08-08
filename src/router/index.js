@@ -1,6 +1,8 @@
-import React from "react";
+import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import { inject, observer } from "mobx-react";
+import { firebase } from "../firebase";
+import { sleep } from "../util";
 import { Header, Footer } from "../components";
 import {
   MainPage,
@@ -14,13 +16,56 @@ import {
   Test
 } from "../pages";
 
-const Router = inject("users")(
-  observer(({ users }) => [
-    users.isLoggedIn ? <Header key={1} /> : <Header key={1} />,
-    users.isLoggedIn ? <PrivateRoutes key={2} /> : <PublicRoutes key={2} />,
-    <Footer key={3} />
-  ])
-);
+// const Router = inject("users")(
+//   observer(({ users }) => [
+//     users.isLoggedIn ? <Header key={1} /> : <Header key={1} />,
+//     users.isLoggedIn ? <PrivateRoutes key={2} /> : <PublicRoutes key={2} />,
+//     <Footer key={3} />
+//   ])
+// );
+
+@inject("users")
+@observer
+class Router extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: localStorage.getItem("user")
+    };
+  }
+
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged(async authUser => {
+      // 인증 객체가 확인되면, user 데이터 객체를 확인
+      console.log("auth listener running...");
+      if (authUser) {
+        while (!this.props.users.user) {
+          console.log("user 객체 탐색");
+          await this.props.users.fetchUser();
+          sleep(1 * 1000);
+        }
+
+        console.log("user 객체 확인");
+        const user = this.props.users.user.uid;
+        this.setState({ user });
+      } else {
+        this.setState({ user: null });
+      }
+    });
+  }
+
+  render() {
+    const { user } = this.state;
+    const check = user || localStorage.getItem("user");
+    return (
+      <>
+        <Header />
+        {check ? <PrivateRoutes /> : <PublicRoutes />}
+        <Footer />
+      </>
+    );
+  }
+}
 
 const PrivateRoutes = props => (
   <div style={styles.container}>

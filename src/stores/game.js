@@ -154,32 +154,33 @@ class GameStore {
 
   @action
   async currentRound() {
-    return await gameRef
-      .orderBy("round", "desc")
-      .limit(1)
-      .get()
-      .then(doc => {
-        if (doc.empty) {
-          return null;
-        }
+    if (this.root.users.user)
+      return await gameRef
+        .orderBy("round", "desc")
+        .limit(1)
+        .get()
+        .then(doc => {
+          if (doc.empty) {
+            return null;
+          }
 
-        let r = {};
+          let r = {};
 
-        doc.forEach(item => {
-          r.round = item.data().round;
-          r.target = item.data().target;
+          doc.forEach(item => {
+            r.round = item.data().round;
+            r.target = item.data().target;
+          });
+
+          console.log("[CROUND]", r);
+          this.round = r.round;
+          this.target = r.target;
+
+          return r;
+        })
+        .catch(err => {
+          console.error(err);
+          throw "현재 라운드 조회 에러";
         });
-
-        console.log("[CROUND]", r);
-        this.round = r.round;
-        this.target = r.target;
-
-        return r;
-      })
-      .catch(err => {
-        console.error(err);
-        throw "현재 라운드 조회 에러";
-      });
   }
 
   // board
