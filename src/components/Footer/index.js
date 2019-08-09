@@ -1,12 +1,23 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import { firebase } from "../../firebase";
 
 @inject("users")
 @observer
 class Footer extends Component {
+  state = {
+    authUser: null
+  };
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged(authUser => {
+      if (authUser) {
+        this.setState({ authUser });
+      }
+    });
+  }
   render() {
-    if (this.props.users.isLoggedIn) {
-      return <></>;
+    if (this.state.authUser) {
+      return <>private</>;
     } else {
       return (
         <footer style={styles.container}>

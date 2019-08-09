@@ -8,73 +8,113 @@ import SubmitField from "../../components/InputField/Three";
 @observer
 class SettingsPage extends Component {
   state = {
-    isFetching: false
+    isFetching: false,
+    nickname: "",
+    msg: "닉네임을 입력해주세요"
   };
-  setNickname = async nickname => {
-    this.setState({ isFetching: true });
+  MSG = {
+    NORMAL: "닉네임을 입력해주세요",
+    WARN: "닉네임은 3글자!",
+    EXIST: "이미 있는 닉네임!",
+    ERROR: "알 수 없는 에러",
+    SUCCESS: "확인 완료"
+  };
+  handleChange = e => {
+    e.preventDefault();
+    const { name, value } = e.target;
+    if (value.length > 3) {
+      return this.setState({ msg: this.MSG.WARN });
+    }
+    this.setState({
+      [name]: value,
+      msg: this.MSG.NORMAL
+    });
+  };
+  handleSubmit = async e => {
+    e.preventDefault();
+    const { nickname } = this.state;
+    if (nickname.length !== 3) {
+      return this.setState({ msg: this.MSG.WARN });
+    }
 
-    // get uid from current login user.
-    const data = {
-      uid: firebase.auth().currentUser.uid,
-      // uid: this.props.users.user.uid,
-      nickname
-    };
-
-    const resultStatus = await this.props.users.setNickname(data);
-
-    if (resultStatus) {
-      const { user, fetchUser } = this.props.users;
-      const { history } = this.props;
-      await fetchUser().then(function() {
-        // localStorage.setItem("nickname", data.nickname);
-        history.push("/");
-      });
+    // setSettings
+    try {
+      const result = await this.props.users.setSettings({ nickname });
+      this.setState({ msg: result ? this.MSG.SUCCESS : this.MSG.EXIST });
+      if (result) this.props.history.push("/");
+    } catch (error) {
+      return this.setState({ msg: this.MSG.ERROR });
     }
   };
   render() {
     return (
-      <div style={styles.container}>
-        <p style={styles.textGuide}>닉네임을 입력해주세요.</p>
+      <form
+        style={{ ...styles.common, ...styles.container }}
+        onSubmit={this.handleSubmit}
+      >
+        <p style={styles.textGuide}>{this.state.msg}</p>
         {this.state.isFetching ? (
           <div>Loading....</div>
         ) : (
-          <SubmitField
-            msg="닉네임 입력"
-            func={nickname => this.setNickname(nickname)}
-            {...this.props}
-          />
+          <>
+            <input
+              type="text"
+              style={styles.input}
+              autoFocus={true}
+              placeholder="3 글 자"
+              name="nickname"
+              value={this.state.nickname}
+              onChange={this.handleChange}
+            />
+            <div style={{ ...styles.common, ...styles.btnWrapper }}>
+              <div style={styles.btn} onClick={this.handleSubmit}>
+                저장
+              </div>
+              <div style={styles.btn}>랜덤 생성</div>
+            </div>
+          </>
         )}
-      </div>
+      </form>
     );
   }
 }
 
 const styles = {
-  container: {
+  common: {
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
+  },
+  container: {
     flexDirection: "column"
   },
   textGuide: {
     margin: 0,
-    marginBottom: 10
+    marginBottom: 10,
+    fontSize: 20
   },
   input: {
-    width: 40,
-    height: "auto",
-    lineHeight: "normal",
-    padding: ".4em .4em",
-    backgroundColor: "rgb(255, 255, 255, 0.7)",
-    border: "none",
-    borderRadius: 10,
+    backgroundColor: "rgb(255, 255, 255, 0.2",
     outline: "none",
-    textAlign: "center",
-    fontSize: 40,
-    fontWeight: "600",
+    border: "none",
+    width: 200,
+    fontSize: 30,
     fontFamily: "East Sea Dokdo",
-    marginLeft: 5,
-    marginRight: 5
+    position: "relative",
+    textAlign: "center"
+  },
+  btnWrapper: {
+    width: "100%",
+    justifyContent: "space-around"
+  },
+  btn: {
+    marginTop: 30,
+    padding: 5,
+    width: 60,
+    textAlign: "center",
+    border: "1.5px solid rgb(0, 0, 0, 0.3)",
+    borderRadius: 5,
+    fontSize: 18
   }
 };
 

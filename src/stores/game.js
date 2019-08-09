@@ -25,7 +25,7 @@ class GameStore {
     try {
       await this.currentRound();
       // 게임 가능여부
-      // await this.gamePointUpdate(this.gamePoint[type]);
+      await this.gamePointUpdate(this.gamePoint[type]);
       // board 생성
       const boardRef = db.collection("boards");
       const cround = this.round;

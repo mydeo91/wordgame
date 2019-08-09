@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import firebase, { userRef } from "../../firebase";
+import { firebase, userRef } from "../../firebase";
 import { Link, Redirect } from "react-router-dom";
 import { inject, observer } from "mobx-react";
+import { sleep } from "../../util";
 
 @inject("users", "game")
 @observer
@@ -12,9 +13,19 @@ class MainPage extends React.Component {
     isFetching: false
   };
   async componentDidMount() {
-    await this.props.users.fetchUser();
-    const enableGame = await this.props.game.getGameEnable();
-    this.setState({ enableGame, isFetching: true });
+    // add listener
+    this.unsubscribe = firebase.auth().onAuthStateChanged(async authUser => {
+      if (authUser) {
+        const user = await this.props.users.fetchUser();
+        const enableGame = await this.props.game.getGameEnable();
+        console.log(user, enableGame);
+        this.setState({ user, enableGame, isFetching: true });
+      }
+    });
+  }
+  componentWillUnmount() {
+    // remove listener
+    this.unsubscribe();
   }
   fetchGameStatus = () => {
     var target = this.props.game.getGameEnable();
@@ -25,26 +36,20 @@ class MainPage extends React.Component {
   };
   render() {
     // 신규 사용자라면? 익명 제외 --> settings
-    const { enableGame, isFetching } = this.state;
-    const {
-      users: { user },
-      game: { round }
-    } = this.props;
-    try {
-      if (this.props.users.user.nickname === "") throw "set nickname";
-    } catch (error) {
-      console.error(error);
-      return <Redirect to="/settings" />;
-    }
+    if (!localStorage.getItem("nickname")) return <Redirect to="/settings" />;
+    const { user, enableGame, isFetching } = this.state;
+    const { game } = this.props;
     return (
       <>
-        {isFetching ? <Header user={this.props.users.user} /> : <p>Loading</p>}
+        {isFetching ? <Header user={user} /> : <p>Loading</p>}
         {enableGame ? (
           <Link style={styles.button} to="/ready">
             시작
           </Link>
         ) : (
-          <p>다음 라운드 : {round ? round + 1 : "-"} 라운드 준비 중</p>
+          <p>
+            다음 라운드 : {game.round ? game.round + 1 : "-"} 라운드 준비 중
+          </p>
         )}
         <Link style={styles.button} to="/cround">
           현재 라운드 게시글
@@ -113,7 +118,7 @@ class Header extends Component {
               padding: 5,
               borderRadius: 5
             }}
-            onClick={this.props.users.logout}
+            onClick={this.props.users.signOut}
           >
             {displayName ? "로그아웃" : "회원가입"}
           </div>

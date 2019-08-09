@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+import { Redirect } from "react-router-dom";
 
 import ReadyPage from "./Ready";
 import GamePage from "./Game";
 
+@inject("users", "game")
+@observer
 class GameRouter extends Component {
   state = {
     onReady: false
@@ -16,6 +19,7 @@ class GameRouter extends Component {
   };
   render() {
     console.log("render game router");
+    if (!this.props.users.user) return <Redirect to="/" />;
     if (this.state.onReady) {
       return <ReadyPage {...this.props} />;
     }

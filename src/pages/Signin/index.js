@@ -12,6 +12,8 @@ class SigninPage extends Component {
   };
   // handle functions
   handleSignIn = async ({ type }) => {
+    if (localStorage.getItem("Anonymous_log"))
+      return alert("둘러보기는 1회만 가능해요. 가입 후 이용해주세요.");
     this.setState({ isLoading: true });
     const { signIn } = this.props.users;
     try {
@@ -20,7 +22,7 @@ class SigninPage extends Component {
       console.error(`[${e.code}] ${e.message}`);
       this.setState({ error: "로그인 에러" });
     } finally {
-      this.setState({ isLoading: false });
+      // this.setState({ isLoading: false });
     }
   };
   render() {
@@ -28,18 +30,22 @@ class SigninPage extends Component {
     if (error) alert(error);
     return (
       <>
-        <MainButton
-          fnc={() => this.handleSignIn({ type: "Facebook" })}
-          title="페이스북으로 로그인"
-        />
-        <MainButton
-          fnc={() => this.handleSignIn({ type: "Anonymous" })}
-          title="둘러보기"
-        />
-        <MainButton
-          fnc={() => this.props.history.push("/team")}
-          title="만든이들"
-        />
+        {!isLoading && (
+          <>
+            <MainButton
+              fnc={() => this.handleSignIn({ type: "Facebook" })}
+              title="페이스북으로 로그인"
+            />
+            <MainButton
+              fnc={() => this.handleSignIn({ type: "Anonymous" })}
+              title="둘러보기"
+            />
+            <MainButton
+              fnc={() => this.props.history.push("/team")}
+              title="만든이들"
+            />
+          </>
+        )}
         {isLoading && <div>로그인 중</div>}
       </>
     );
