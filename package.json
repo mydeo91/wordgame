@@ -50,7 +50,7 @@
     "react": "^16.8.6",
     "react-animated-text": "^0.1.4",
     "react-app-polyfill": "^1.0.1",
-    "react-dev-utils": "^9.0.1",
+    "react-dev-utils": "^11.0.4",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.1",
     "react-touch": "^0.4.4",
